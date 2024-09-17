@@ -4,12 +4,16 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import RecentExpensesScreen from './screens/RecentExpensesScreen';
-import AllExpensesScreen from './screens/AllExpensesScreen';
-import ManageExpenseScreen from './screens/ManageExpenseScreen';
 import { GlobalStyles } from './constants/styles';
 import ExpensesProvider from './store/context/expenses-context';
 import IconButton from './components/UI/IconButton';
+import {
+  SignupScreen,
+  LoginScreen,
+  AllExpensesScreen,
+  ManageExpenseScreen,
+  RecentExpensesScreen,
+} from './screens';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -84,6 +88,8 @@ export default function App() {
                 presentation: 'modal',
               }}
             />
+            <Stack.Screen name="Signup" component={SignupScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </ExpensesProvider>

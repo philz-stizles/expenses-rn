@@ -10,7 +10,10 @@ function ExpenseList({ expenses }) {
     <FlatList
       data={expenses}
       renderItem={renderExpenseItem}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => {
+        console.log(item);
+        return item.id;
+      }}
     />
   );
 }

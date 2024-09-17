@@ -1,14 +1,28 @@
+import { useState } from 'react';
 import { useLayoutEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useExpenses } from '../store/context/expenses-context';
 import { GlobalStyles } from '../constants/styles';
-import Button from '../components/UI/Button';
 import IconButton from '../components/UI/IconButton';
+import ExpenseForm from '../components/ManageExpense/ExpenseForm';
+import LoadingOverlay from '../components/UI/LoadingOverlay';
+import ErrorOverlay from '../components/UI/ErrorOverlay';
+import { storeExpense, updateExpense } from '../utils/http-util';
 
 function ManageExpense({ route, navigation }) {
-  const { addExpense, updateExpense, deleteExpense } = useExpenses();
+  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState();
+  const {
+    expenses,
+    addExpense,
+    updateExpense: updateStore,
+    deleteExpense,
+  } = useExpenses();
   const expenseId = route.params?.expenseId;
   const isEditing = !!expenseId;
+  const selectedExpense = isEditing
+    ? expenses.find((expense) => expense.id === expenseId)
+    : null;
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -16,34 +30,57 @@ function ManageExpense({ route, navigation }) {
     });
   }, [navigation, isEditing]);
 
-  function deleteExpenseHandler() {
-    deleteExpense(expenseId);
-    navigation.goBack();
+  async function deleteExpenseHandler() {
+    setIsPending(true);
+    try {
+      deleteExpense(expenseId);
+      navigation.goBack();
+    } catch (error) {
+      setError('Could not delete expense - Please try again later!');
+      setIsPending(false);
+    }
   }
 
   function cancelHandler() {
     navigation.goBack();
   }
 
-  function confirmHandler() {
-    if (isEditing) {
-      updateExpense(expenseId);
-    } else {
-      addExpense(expenseId);
+  async function confirmHandler(data) {
+    setIsPending(true);
+    try {
+      if (isEditing) {
+        // updateExpense(expenseId, data);
+        updateStore(expenseId, data);
+        await updateExpense(expenseId, data);
+      } else {
+        // addExpense(data);
+        const id = await storeExpense(data);
+        addExpense({ ...data, id });
+      }
+
+      navigation.goBack();
+    } catch (error) {
+      setError('Could not delete expense - Please try again later!');
+      setIsPending(false);
     }
-    navigation.goBack();
+  }
+
+  if (error && !isPending) {
+    return <ErrorOverlay message={error} />;
+  }
+
+  if (isPending) {
+    return <LoadingOverlay />;
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.buttons}>
-        <Button style={styles.button} mode="flat" onPress={cancelHandler}>
-          Cancel
-        </Button>
-        <Button style={styles.button} onPress={confirmHandler}>
-          {isEditing ? 'Update' : 'Add'}
-        </Button>
-      </View>
+      <ExpenseForm
+        submitButtonLabel={isEditing ? 'Update' : 'Add'}
+        onSubmit={confirmHandler}
+        onCancel={cancelHandler}
+        defaultValues={selectedExpense}
+      />
       {isEditing && (
         <View style={styles.deleteContainer}>
           <IconButton
@@ -65,15 +102,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     backgroundColor: GlobalStyles.colors.primary800,
-  },
-  buttons: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    minWidth: 120,
-    marginHorizontal: 8,
   },
   deleteContainer: {
     marginTop: 16,
