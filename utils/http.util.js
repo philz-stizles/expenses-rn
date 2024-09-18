@@ -1,10 +1,11 @@
 import axios from 'axios';
 
-const API_KEY = 'AIzaSyDRsXcf-_W-ej2sKPXVFTjX0dcZa9HqQgE';
-const BACKEND_URL = 'https://devdezyn-f8967-default-rtdb.firebaseio.com';
+const API_KEY = process.env.EXPO_PUBLIC_API_KEY;
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
+const AUTH_BASE_URL = process.env.EXPO_PUBLIC_AUTH_BASE_URL;
 
 async function authenticate(mode, credentials) {
-  const url = `https://identitytoolkit.googleapis.com/v1/accounts:${mode}?key=${API_KEY}`;
+  const url = `${AUTH_BASE_URL}${mode}?key=${API_KEY}`;
 
   const response = await axios.post(url, {
     email: credentials?.email,
@@ -24,13 +25,13 @@ export async function login(credentials) {
 }
 
 export async function storeExpense(data) {
-  const response = await axios.post(`${BACKEND_URL}/expenses.json`, data);
+  const response = await axios.post(`${API_URL}/expenses.json`, data);
 
   return response?.data?.name;
 }
 
 export async function getExpenses() {
-  const response = await axios.get(`${BACKEND_URL}/expenses.json`);
+  const response = await axios.get(`${API_URL}/expenses.json`);
 
   return response?.data
     ? Object.keys(response.data).map((key) => {
@@ -45,9 +46,9 @@ export async function getExpenses() {
 }
 
 export async function updateExpense(id, data) {
-  return axios.put(`${BACKEND_URL}/expenses/${id}.json`, data);
+  return axios.put(`${API_URL}/expenses/${id}.json`, data);
 }
 
 export async function deleteExpense(id) {
-  return axios.delete(`${BACKEND_URL}/expenses/${id}.json`);
+  return axios.delete(`${API_URL}/expenses/${id}.json`);
 }

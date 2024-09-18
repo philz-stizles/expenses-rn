@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "expenses-rn",
-    "slug": "expenses-rn",
+    "name": "SpendTrack",
+    "slug": "spend.track",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -12,9 +12,14 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "bundleIdentifier": "com.example.spendtrack",
+      "buildNumber": "1.0.0",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.example.spendtrack",
+      "versionCode": 1,
+      "permissions": ["CAMERA", "CAMERA_ROLL"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
