@@ -18,7 +18,12 @@ function Input({ label, expanded, invalid, ...textInputConfig }) {
       <Text style={[styles.label, invalid && styles.invalidLabel]}>
         {label}
       </Text>
-      <TextInput style={inputStyles} {...textInputConfig} />
+      <TextInput
+        style={inputStyles}
+        autoCorrect={false}
+        autoCapitalize="none"
+        {...textInputConfig}
+      />
     </View>
   );
 }

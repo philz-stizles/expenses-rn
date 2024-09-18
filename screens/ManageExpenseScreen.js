@@ -1,13 +1,12 @@
-import { useState } from 'react';
-import { useLayoutEffect } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useExpenses } from '../store/context/expenses-context';
+import { useExpenses } from '../store/context/expenses.context';
 import { GlobalStyles } from '../constants/styles';
 import IconButton from '../components/UI/IconButton';
 import ExpenseForm from '../components/ManageExpense/ExpenseForm';
 import LoadingOverlay from '../components/UI/LoadingOverlay';
 import ErrorOverlay from '../components/UI/ErrorOverlay';
-import { storeExpense, updateExpense } from '../utils/http-util';
+import { storeExpense, updateExpense, deleteExpense } from '../utils/http.util';
 
 function ManageExpense({ route, navigation }) {
   const [isPending, setIsPending] = useState(false);
@@ -15,8 +14,8 @@ function ManageExpense({ route, navigation }) {
   const {
     expenses,
     addExpense,
-    updateExpense: updateStore,
-    deleteExpense,
+    updateExpense: updateStoreExpense,
+    deleteExpense: deleteStoreExpense,
   } = useExpenses();
   const expenseId = route.params?.expenseId;
   const isEditing = !!expenseId;
@@ -33,7 +32,8 @@ function ManageExpense({ route, navigation }) {
   async function deleteExpenseHandler() {
     setIsPending(true);
     try {
-      deleteExpense(expenseId);
+      deleteStoreExpense(expenseId);
+      await deleteExpense(expenseId);
       navigation.goBack();
     } catch (error) {
       setError('Could not delete expense - Please try again later!');
@@ -50,7 +50,7 @@ function ManageExpense({ route, navigation }) {
     try {
       if (isEditing) {
         // updateExpense(expenseId, data);
-        updateStore(expenseId, data);
+        updateStoreExpense(expenseId, data);
         await updateExpense(expenseId, data);
       } else {
         // addExpense(data);
@@ -60,7 +60,7 @@ function ManageExpense({ route, navigation }) {
 
       navigation.goBack();
     } catch (error) {
-      setError('Could not delete expense - Please try again later!');
+      setError('Could not save data - Please try again later!');
       setIsPending(false);
     }
   }

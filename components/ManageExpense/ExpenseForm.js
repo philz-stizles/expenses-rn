@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Input from '../UI/Input';
 import Button from '../UI/Button';
-import { getFormattedDate } from '../../utils/date-utils';
+import { getFormattedDate } from '../../utils/date.utils';
 import { GlobalStyles } from '../../constants/styles';
 
 function ExpenseForm({ submitButtonLabel, defaultValues, onSubmit, onCancel }) {
@@ -140,6 +140,6 @@ const styles = StyleSheet.create({
   },
   button: {
     minWidth: 120,
-    marginHorizontal: 8
-  }
+    marginHorizontal: 8,
+  },
 });

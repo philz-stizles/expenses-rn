@@ -1,5 +1,5 @@
 import ExpensesOutput from '../components/ExpensesOutput/ExpensesOutput';
-import { useExpenses } from '../store/context/expenses-context';
+import { useExpenses } from '../store/context/expenses.context';
 
 function AllExpenses() {
   const { expenses } = useExpenses();

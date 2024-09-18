@@ -5,7 +5,6 @@ import ExpenseList from './ExpenseList';
 import { GlobalStyles } from '../../constants/styles';
 
 function ExpensesOutput({ expenses, period, fallbackText }) {
-
   let content = <Text style={styles.infoText}>{fallbackText}</Text>;
 
   if (expenses.length > 0) {
